@@ -6,16 +6,25 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
+    "graphql-codegen": "graphql-codegen",
     "watch-ts": "tsc -w",
     "watch-node": "nodemon -e js,gql",
     "start": "concurrently 'npm:watch-ts' 'npm:watch-node'"
   },
   "author": "Andrew Short <andrewjshort@gmail.com>",
   "dependencies": {
+    "@graphql-codegen/cli": "^1.4.0",
+    "@types/dotenv": "^6.1.1",
+    "@types/mongodb": "^3.1.28",
+    "apollo-datasource": "^0.6.0",
     "apollo-server": "^2.7.0",
-    "graphql": "^14.4.2"
+    "dotenv": "^8.0.0",
+    "graphql": "^14.4.2",
+    "mongodb": "^3.3.0-beta2"
   },
   "devDependencies": {
+    "@graphql-codegen/typescript-mongodb": "^1.4.0",
+    "@graphql-codegen/typescript-resolvers": "^1.4.0",
     "@types/graphql": "^14.2.2",
     "concurrently": "^4.1.1",
     "nodemon": "^1.19.1",

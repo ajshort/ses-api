@@ -1,0 +1,5 @@
+type Unit @entity {
+  id: ID! @id
+  code: String! @column
+  name: String! @column
+}

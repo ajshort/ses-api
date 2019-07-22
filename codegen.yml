@@ -1,0 +1,13 @@
+generates:
+  src/generated/mongodb.ts:
+    schema: src/database.gql
+    plugins:
+      - typescript-mongodb
+  src/generated/graphql.ts:
+    schema: src/schema.gql
+    config:
+      mappers:
+        Unit: ./mongodb#UnitDbObject
+    plugins:
+      - typescript
+      - typescript-resolvers

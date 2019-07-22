@@ -1,3 +1,9 @@
+type Unit {
+  id: ID!
+  code: String!
+  name: String!
+}
+
 type Query {
-  hello: String
+  units: [Unit!]!
 }
