@@ -4,3 +4,10 @@ export type UnitDbObject = {
   code: string;
   name: string;
 };
+
+export type MemberDbObject = {
+  _id: ObjectID;
+  number: number;
+  givenNames: string;
+  surname: string;
+};

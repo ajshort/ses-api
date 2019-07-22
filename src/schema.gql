@@ -4,6 +4,15 @@ type Unit {
   name: String!
 }
 
+type Member {
+  id: ID!
+  number: Int!
+  fullName: String!
+  givenNames: String!
+  surname: String!
+}
+
 type Query {
   units: [Unit!]!
+  members: [Member!]!
 }

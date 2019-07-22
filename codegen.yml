@@ -7,6 +7,7 @@ generates:
     schema: src/schema.gql
     config:
       mappers:
+        Member: ./mongodb#MemberDbObject
         Unit: ./mongodb#UnitDbObject
     plugins:
       - typescript

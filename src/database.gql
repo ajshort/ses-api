@@ -3,3 +3,10 @@ type Unit @entity {
   code: String! @column
   name: String! @column
 }
+
+type Member @entity {
+  id: ID! @id
+  number: Int! @column
+  givenNames: String! @column
+  surname: String! @column
+}

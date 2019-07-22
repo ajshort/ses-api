@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from "graphql";
-import { UnitDbObject } from "./mongodb";
+import { MemberDbObject, UnitDbObject } from "./mongodb";
 export type Maybe<T> = T | null;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -10,9 +10,19 @@ export type Scalars = {
   Float: number;
 };
 
+export type Member = {
+  __typename?: "Member";
+  id: Scalars["ID"];
+  number: Scalars["Int"];
+  fullName: Scalars["String"];
+  givenNames: Scalars["String"];
+  surname: Scalars["String"];
+};
+
 export type Query = {
   __typename?: "Query";
   units: Array<Unit>;
+  members: Array<Member>;
 };
 
 export type Unit = {
@@ -97,6 +107,8 @@ export type ResolversTypes = {
   Unit: ResolverTypeWrapper<UnitDbObject>;
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   String: ResolverTypeWrapper<Scalars["String"]>;
+  Member: ResolverTypeWrapper<MemberDbObject>;
+  Int: ResolverTypeWrapper<Scalars["Int"]>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 };
 
@@ -106,7 +118,20 @@ export type ResolversParentTypes = {
   Unit: UnitDbObject;
   ID: Scalars["ID"];
   String: Scalars["String"];
+  Member: MemberDbObject;
+  Int: Scalars["Int"];
   Boolean: Scalars["Boolean"];
+};
+
+export type MemberResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes["Member"]
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  number?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  fullName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  givenNames?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  surname?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 };
 
 export type QueryResolvers<
@@ -114,6 +139,7 @@ export type QueryResolvers<
   ParentType = ResolversParentTypes["Query"]
 > = {
   units?: Resolver<Array<ResolversTypes["Unit"]>, ParentType, ContextType>;
+  members?: Resolver<Array<ResolversTypes["Member"]>, ParentType, ContextType>;
 };
 
 export type UnitResolvers<
@@ -126,6 +152,7 @@ export type UnitResolvers<
 };
 
 export type Resolvers<ContextType = any> = {
+  Member?: MemberResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Unit?: UnitResolvers<ContextType>;
 };
