@@ -13,4 +13,8 @@ export default class UnitsDataSource extends DataSource {
   fetchUnits() {
     return this.collection.then(collection => collection.find().sort({ code: 1 }).toArray());
   }
+
+  fetchUnit(code: string) {
+    return this.collection.then(collection => collection.findOne({ code }));
+  }
 }

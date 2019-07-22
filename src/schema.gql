@@ -6,6 +6,7 @@ type Unit {
   id: ID!
   code: String!
   name: String!
+  members(limit: Int!, offset: Int!): [Member!]!
 }
 
 type Member {
@@ -41,9 +42,9 @@ type Availability {
 }
 
 type Query {
-  units: [Unit!]! @authenticated
+  units(limit: Int!, offset: Int!): [Unit!]! @authenticated
+  unit(code: String!): Unit @authenticated
 
-  members: [Member!]! @authenticated
   loggedInMember: Member! @authenticated
 }
 

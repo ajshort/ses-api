@@ -11,8 +11,10 @@ export default class UnitsDataSource extends DataSource {
     this.collection = db.then(db => db.collection('members'));
   }
 
-  fetchMembers() {
-    return this.collection.then(collection => collection.find().sort({ number: 1 }).toArray());
+  fetchUnitMembers(unitCode: string, limit: number, offset: number) {
+    return this.collection.then(collection => (
+      collection.find({ units: unitCode }).sort({ number: 1 }).limit(limit).skip(offset).toArray()
+    ));
   }
 
   fetchMember(number: number) {

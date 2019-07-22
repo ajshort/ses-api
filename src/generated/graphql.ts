@@ -29,6 +29,17 @@ export type Availability = {
   note?: Maybe<Scalars["String"]>;
 };
 
+export type AvailabilityInput = {
+  unitCode: Scalars["String"];
+  memberNumber: Scalars["Int"];
+  from: Scalars["DateTime"];
+  to: Scalars["DateTime"];
+  storm?: Maybe<StormAvailable>;
+  rescue?: Maybe<RescueAvailable>;
+  vehicle?: Maybe<Scalars["String"]>;
+  note?: Maybe<Scalars["String"]>;
+};
+
 export type Member = {
   __typename?: "Member";
   id: Scalars["ID"];
@@ -36,6 +47,7 @@ export type Member = {
   fullName: Scalars["String"];
   givenNames: Scalars["String"];
   surname: Scalars["String"];
+  units: Array<Unit>;
   availabilities: Array<Availability>;
 };
 
@@ -48,6 +60,7 @@ export type MemberAvailabilitiesArgs = {
 export type Mutation = {
   __typename?: "Mutation";
   login: Scalars["String"];
+  setAvailability: Array<Availability>;
 };
 
 export type MutationLoginArgs = {
@@ -55,11 +68,24 @@ export type MutationLoginArgs = {
   password: Scalars["String"];
 };
 
+export type MutationSetAvailabilityArgs = {
+  availability: AvailabilityInput;
+};
+
 export type Query = {
   __typename?: "Query";
   units: Array<Unit>;
-  members: Array<Member>;
+  unit?: Maybe<Unit>;
   loggedInMember: Member;
+};
+
+export type QueryUnitsArgs = {
+  limit: Scalars["Int"];
+  offset: Scalars["Int"];
+};
+
+export type QueryUnitArgs = {
+  code: Scalars["String"];
 };
 
 export enum RescueAvailable {
@@ -78,6 +104,12 @@ export type Unit = {
   id: Scalars["ID"];
   code: Scalars["String"];
   name: Scalars["String"];
+  members: Array<Member>;
+};
+
+export type UnitMembersArgs = {
+  limit: Scalars["Int"];
+  offset: Scalars["Int"];
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -152,11 +184,11 @@ export type DirectiveResolverFn<
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
+  Int: ResolverTypeWrapper<Scalars["Int"]>;
   Unit: ResolverTypeWrapper<UnitDbObject>;
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   String: ResolverTypeWrapper<Scalars["String"]>;
   Member: ResolverTypeWrapper<MemberDbObject>;
-  Int: ResolverTypeWrapper<Scalars["Int"]>;
   DateTime: ResolverTypeWrapper<Scalars["DateTime"]>;
   Availability: ResolverTypeWrapper<
     Omit<Availability, "unit" | "member"> & {
@@ -167,17 +199,18 @@ export type ResolversTypes = {
   StormAvailable: StormAvailable;
   RescueAvailable: RescueAvailable;
   Mutation: ResolverTypeWrapper<{}>;
+  AvailabilityInput: AvailabilityInput;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {};
+  Int: Scalars["Int"];
   Unit: UnitDbObject;
   ID: Scalars["ID"];
   String: Scalars["String"];
   Member: MemberDbObject;
-  Int: Scalars["Int"];
   DateTime: Scalars["DateTime"];
   Availability: Omit<Availability, "unit" | "member"> & {
     unit: ResolversTypes["Unit"];
@@ -186,6 +219,7 @@ export type ResolversParentTypes = {
   StormAvailable: StormAvailable;
   RescueAvailable: RescueAvailable;
   Mutation: {};
+  AvailabilityInput: AvailabilityInput;
   Boolean: Scalars["Boolean"];
 };
 
@@ -233,6 +267,7 @@ export type MemberResolvers<
   fullName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   givenNames?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  units?: Resolver<Array<ResolversTypes["Unit"]>, ParentType, ContextType>;
   availabilities?: Resolver<
     Array<ResolversTypes["Availability"]>,
     ParentType,
@@ -251,14 +286,30 @@ export type MutationResolvers<
     ContextType,
     MutationLoginArgs
   >;
+  setAvailability?: Resolver<
+    Array<ResolversTypes["Availability"]>,
+    ParentType,
+    ContextType,
+    MutationSetAvailabilityArgs
+  >;
 };
 
 export type QueryResolvers<
   ContextType = any,
   ParentType = ResolversParentTypes["Query"]
 > = {
-  units?: Resolver<Array<ResolversTypes["Unit"]>, ParentType, ContextType>;
-  members?: Resolver<Array<ResolversTypes["Member"]>, ParentType, ContextType>;
+  units?: Resolver<
+    Array<ResolversTypes["Unit"]>,
+    ParentType,
+    ContextType,
+    QueryUnitsArgs
+  >;
+  unit?: Resolver<
+    Maybe<ResolversTypes["Unit"]>,
+    ParentType,
+    ContextType,
+    QueryUnitArgs
+  >;
   loggedInMember?: Resolver<ResolversTypes["Member"], ParentType, ContextType>;
 };
 
@@ -269,6 +320,12 @@ export type UnitResolvers<
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   code?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  members?: Resolver<
+    Array<ResolversTypes["Member"]>,
+    ParentType,
+    ContextType,
+    UnitMembersArgs
+  >;
 };
 
 export type Resolvers<ContextType = any> = {

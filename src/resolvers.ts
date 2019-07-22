@@ -18,8 +18,8 @@ const Query: QueryResolvers<Context> = {
   units: (_source, _args, { dataSources }) => (
     dataSources.units.fetchUnits()
   ),
-  members: (_source, _args, { dataSources }) => (
-    dataSources.members.fetchMembers()
+  unit: (_source, { code }, { dataSources }) => (
+    dataSources.units.fetchUnit(code)
   ),
   loggedInMember: (_source, _args, { dataSources, memberNumber }) => (
     dataSources.members.fetchMember(memberNumber)
@@ -48,6 +48,9 @@ const Member: MemberResolvers<Context> = {
 
 const Unit: UnitResolvers<Context> = {
   id: unit => unit._id.toString(),
+  members: (unit, { limit, offset }, { dataSources }) => (
+    dataSources.members.fetchUnitMembers(unit.code, limit, offset)
+  ),
 };
 
 const resolvers: Resolvers<Context> = {
