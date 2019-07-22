@@ -1,3 +1,5 @@
+directive @authenticated on FIELD_DEFINITION
+
 type Unit {
   id: ID!
   code: String!
@@ -13,6 +15,12 @@ type Member {
 }
 
 type Query {
-  units: [Unit!]!
-  members: [Member!]!
+  units: [Unit!]! @authenticated
+
+  members: [Member!]! @authenticated
+  loggedInMember: Member! @authenticated
+}
+
+type Mutation {
+  login(memberNumber: Int!, password: String!): String!
 }

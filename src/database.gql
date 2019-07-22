@@ -9,4 +9,5 @@ type Member @entity {
   number: Int! @column
   givenNames: String! @column
   surname: String! @column
+  password: String @column
 }

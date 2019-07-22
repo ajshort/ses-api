@@ -19,10 +19,21 @@ export type Member = {
   surname: Scalars["String"];
 };
 
+export type Mutation = {
+  __typename?: "Mutation";
+  login: Scalars["String"];
+};
+
+export type MutationLoginArgs = {
+  memberNumber: Scalars["Int"];
+  password: Scalars["String"];
+};
+
 export type Query = {
   __typename?: "Query";
   units: Array<Unit>;
   members: Array<Member>;
+  loggedInMember: Member;
 };
 
 export type Unit = {
@@ -109,6 +120,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars["String"]>;
   Member: ResolverTypeWrapper<MemberDbObject>;
   Int: ResolverTypeWrapper<Scalars["Int"]>;
+  Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 };
 
@@ -120,8 +132,16 @@ export type ResolversParentTypes = {
   String: Scalars["String"];
   Member: MemberDbObject;
   Int: Scalars["Int"];
+  Mutation: {};
   Boolean: Scalars["Boolean"];
 };
+
+export type AuthenticatedDirectiveResolver<
+  Result,
+  Parent,
+  ContextType = any,
+  Args = {}
+> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type MemberResolvers<
   ContextType = any,
@@ -134,12 +154,25 @@ export type MemberResolvers<
   surname?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
 };
 
+export type MutationResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes["Mutation"]
+> = {
+  login?: Resolver<
+    ResolversTypes["String"],
+    ParentType,
+    ContextType,
+    MutationLoginArgs
+  >;
+};
+
 export type QueryResolvers<
   ContextType = any,
   ParentType = ResolversParentTypes["Query"]
 > = {
   units?: Resolver<Array<ResolversTypes["Unit"]>, ParentType, ContextType>;
   members?: Resolver<Array<ResolversTypes["Member"]>, ParentType, ContextType>;
+  loggedInMember?: Resolver<ResolversTypes["Member"], ParentType, ContextType>;
 };
 
 export type UnitResolvers<
@@ -153,6 +186,7 @@ export type UnitResolvers<
 
 export type Resolvers<ContextType = any> = {
   Member?: MemberResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Unit?: UnitResolvers<ContextType>;
 };
@@ -162,3 +196,14 @@ export type Resolvers<ContextType = any> = {
  * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
  */
 export type IResolvers<ContextType = any> = Resolvers<ContextType>;
+export type DirectiveResolvers<ContextType = any> = {
+  authenticated?: AuthenticatedDirectiveResolver<any, any, ContextType>;
+};
+
+/**
+ * @deprecated
+ * Use "DirectiveResolvers" root object instead. If you wish to get "IDirectiveResolvers", add "typesPrefix: I" to your config.
+ */
+export type IDirectiveResolvers<ContextType = any> = DirectiveResolvers<
+  ContextType
+>;

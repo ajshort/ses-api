@@ -1,8 +1,17 @@
 import { DataSources } from './datasources';
-import { QueryResolvers, Resolvers, UnitResolvers, MemberResolvers } from './generated/graphql'
+import {
+  QueryResolvers,
+  Resolvers,
+  UnitResolvers,
+  MemberResolvers,
+  MutationResolvers
+} from './generated/graphql';
+import { AuthenticationError } from 'apollo-server';
+import jwt from 'jsonwebtoken';
 
 type Context = {
   dataSources: DataSources;
+  memberNumber?: number;
 };
 
 const Query: QueryResolvers<Context> = {
@@ -12,6 +21,24 @@ const Query: QueryResolvers<Context> = {
   members: (_source, _args, { dataSources }) => (
     dataSources.members.fetchMembers()
   ),
+  loggedInMember: (_source, _args, { dataSources, memberNumber }) => (
+    dataSources.members.fetchMember(memberNumber)
+  ),
+};
+
+const Mutation: MutationResolvers<Context> = {
+  login: async (_source, { memberNumber, password }, { dataSources }) => {
+    const member = await dataSources.members.authenticateMember(memberNumber, password);
+
+    if (!member) {
+      throw new AuthenticationError('Invalid member number and/or password');
+    }
+
+    return jwt.sign(<object> {
+      iss: '@ajshort/ses-api',
+      sub: member.number,
+    }, process.env.JWT_SECRET);
+  },
 };
 
 const Member: MemberResolvers<Context> = {
@@ -25,6 +52,7 @@ const Unit: UnitResolvers<Context> = {
 
 const resolvers: Resolvers<Context> = {
   Member,
+  Mutation,
   Query,
   Unit,
 };

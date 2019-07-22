@@ -2,6 +2,7 @@ generates:
   src/generated/mongodb.ts:
     schema: src/database.gql
     plugins:
+      - typescript
       - typescript-mongodb
   src/generated/graphql.ts:
     schema: src/schema.gql
