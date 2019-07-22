@@ -1,0 +1,20 @@
+{
+  "name": "ses-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "watch-ts": "tsc -w",
+    "watch-node": "nodemon ./dist/index.js",
+    "start": "concurrently 'npm:watch-ts' 'npm:watch-node'"
+  },
+  "author": "Andrew Short <andrewjshort@gmail.com>",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.1",
+    "nodemon": "^1.19.1",
+    "typescript": "^3.5.3"
+  }
+}
