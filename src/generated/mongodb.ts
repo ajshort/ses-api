@@ -47,6 +47,13 @@ export enum StormAvailable {
   Unavailable = "UNAVAILABLE"
 }
 
+export type Team = {
+  __typename?: "Team";
+  id: Scalars["ID"];
+  unit: Scalars["String"];
+  name: Scalars["String"];
+};
+
 export type Unit = {
   __typename?: "Unit";
   id: Scalars["ID"];
@@ -57,6 +64,12 @@ import { ObjectID } from "mongodb";
 export type UnitDbObject = {
   _id: ObjectID;
   code: string;
+  name: string;
+};
+
+export type TeamDbObject = {
+  _id: ObjectID;
+  unit: string;
   name: string;
 };
 

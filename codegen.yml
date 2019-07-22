@@ -12,6 +12,7 @@ generates:
     config:
       mappers:
         Member: ./mongodb#MemberDbObject
+        Team: ./mongodb#TeamDbObject
         Unit: ./mongodb#UnitDbObject
       scalars:
         DateTime: Date

@@ -6,6 +6,12 @@ type Unit @entity {
   name: String! @column
 }
 
+type Team @entity {
+  id: ID! @id
+  unit: String! @column
+  name: String! @column
+}
+
 type Member @entity {
   id: ID! @id
   number: Int! @column

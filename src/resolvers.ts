@@ -4,7 +4,8 @@ import {
   Resolvers,
   UnitResolvers,
   MemberResolvers,
-  MutationResolvers
+  MutationResolvers,
+  TeamResolvers
 } from './generated/graphql';
 import { AuthenticationError } from 'apollo-server';
 import jwt from 'jsonwebtoken';
@@ -46,8 +47,15 @@ const Member: MemberResolvers<Context> = {
   fullName: member => `${member.givenNames} ${member.surname}`,
 };
 
+const Team: TeamResolvers<Context> = {
+  id: team => team._id.toString(),
+};
+
 const Unit: UnitResolvers<Context> = {
   id: unit => unit._id.toString(),
+  teams: (unit, _args, { dataSources }) => (
+    dataSources.teams.fetchUnitTeams(unit.code)
+  ),
   members: (unit, { limit, offset }, { dataSources }) => (
     dataSources.members.fetchUnitMembers(unit.code, limit, offset)
   ),
@@ -57,6 +65,7 @@ const resolvers: Resolvers<Context> = {
   Member,
   Mutation,
   Query,
+  Team,
   Unit,
 };
 

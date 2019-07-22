@@ -3,7 +3,7 @@ import {
   GraphQLScalarType,
   GraphQLScalarTypeConfig
 } from "graphql";
-import { MemberDbObject, UnitDbObject } from "./mongodb";
+import { MemberDbObject, TeamDbObject, UnitDbObject } from "./mongodb";
 export type Maybe<T> = T | null;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
@@ -47,7 +47,6 @@ export type Member = {
   fullName: Scalars["String"];
   givenNames: Scalars["String"];
   surname: Scalars["String"];
-  units: Array<Unit>;
   availabilities: Array<Availability>;
 };
 
@@ -99,11 +98,18 @@ export enum StormAvailable {
   Unavailable = "UNAVAILABLE"
 }
 
+export type Team = {
+  __typename?: "Team";
+  id: Scalars["ID"];
+  name: Scalars["String"];
+};
+
 export type Unit = {
   __typename?: "Unit";
   id: Scalars["ID"];
   code: Scalars["String"];
   name: Scalars["String"];
+  teams: Array<Team>;
   members: Array<Member>;
 };
 
@@ -188,6 +194,7 @@ export type ResolversTypes = {
   Unit: ResolverTypeWrapper<UnitDbObject>;
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   String: ResolverTypeWrapper<Scalars["String"]>;
+  Team: ResolverTypeWrapper<TeamDbObject>;
   Member: ResolverTypeWrapper<MemberDbObject>;
   DateTime: ResolverTypeWrapper<Scalars["DateTime"]>;
   Availability: ResolverTypeWrapper<
@@ -210,6 +217,7 @@ export type ResolversParentTypes = {
   Unit: UnitDbObject;
   ID: Scalars["ID"];
   String: Scalars["String"];
+  Team: TeamDbObject;
   Member: MemberDbObject;
   DateTime: Scalars["DateTime"];
   Availability: Omit<Availability, "unit" | "member"> & {
@@ -267,7 +275,6 @@ export type MemberResolvers<
   fullName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   givenNames?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  units?: Resolver<Array<ResolversTypes["Unit"]>, ParentType, ContextType>;
   availabilities?: Resolver<
     Array<ResolversTypes["Availability"]>,
     ParentType,
@@ -313,6 +320,14 @@ export type QueryResolvers<
   loggedInMember?: Resolver<ResolversTypes["Member"], ParentType, ContextType>;
 };
 
+export type TeamResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes["Team"]
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+};
+
 export type UnitResolvers<
   ContextType = any,
   ParentType = ResolversParentTypes["Unit"]
@@ -320,6 +335,7 @@ export type UnitResolvers<
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   code?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  teams?: Resolver<Array<ResolversTypes["Team"]>, ParentType, ContextType>;
   members?: Resolver<
     Array<ResolversTypes["Member"]>,
     ParentType,
@@ -334,6 +350,7 @@ export type Resolvers<ContextType = any> = {
   Member?: MemberResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Team?: TeamResolvers<ContextType>;
   Unit?: UnitResolvers<ContextType>;
 };
 
