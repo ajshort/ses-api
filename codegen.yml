@@ -1,6 +1,9 @@
 generates:
   src/generated/mongodb.ts:
     schema: src/database.gql
+    config:
+      scalars:
+        DateTime: Date
     plugins:
       - typescript
       - typescript-mongodb
@@ -10,6 +13,8 @@ generates:
       mappers:
         Member: ./mongodb#MemberDbObject
         Unit: ./mongodb#UnitDbObject
+      scalars:
+        DateTime: Date
     plugins:
       - typescript
       - typescript-resolvers

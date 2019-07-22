@@ -1,3 +1,5 @@
+scalar DateTime
+
 directive @authenticated on FIELD_DEFINITION
 
 type Unit {
@@ -12,6 +14,30 @@ type Member {
   fullName: String!
   givenNames: String!
   surname: String!
+  availabilities(unitCode: String!, from: DateTime!, to: DateTime!): [Availability!]!
+}
+
+enum StormAvailable {
+  AVAILABLE
+  UNAVAILABLE
+}
+
+enum RescueAvailable {
+  IMMEDIATE
+  SUPPORT
+  UNAVAILABLE
+}
+
+type Availability {
+  id: ID!
+  unit: Unit!
+  member: Member!
+  from: DateTime!
+  to: DateTime!
+  storm: StormAvailable
+  rescue: RescueAvailable
+  vehicle: String
+  note: String
 }
 
 type Query {
@@ -21,6 +47,18 @@ type Query {
   loggedInMember: Member! @authenticated
 }
 
+input AvailabilityInput {
+  unitCode: String!
+  memberNumber: Int!
+  from: DateTime!
+  to: DateTime!
+  storm: StormAvailable
+  rescue: RescueAvailable
+  vehicle: String
+  note: String
+}
+
 type Mutation {
   login(memberNumber: Int!, password: String!): String!
+  setAvailability(availability: AvailabilityInput!): [Availability!]!
 }

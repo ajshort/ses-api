@@ -1,6 +1,11 @@
-import { GraphQLResolveInfo } from "graphql";
+import {
+  GraphQLResolveInfo,
+  GraphQLScalarType,
+  GraphQLScalarTypeConfig
+} from "graphql";
 import { MemberDbObject, UnitDbObject } from "./mongodb";
 export type Maybe<T> = T | null;
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -8,6 +13,20 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: Date;
+};
+
+export type Availability = {
+  __typename?: "Availability";
+  id: Scalars["ID"];
+  unit: Unit;
+  member: Member;
+  from: Scalars["DateTime"];
+  to: Scalars["DateTime"];
+  storm?: Maybe<StormAvailable>;
+  rescue?: Maybe<RescueAvailable>;
+  vehicle?: Maybe<Scalars["String"]>;
+  note?: Maybe<Scalars["String"]>;
 };
 
 export type Member = {
@@ -17,6 +36,13 @@ export type Member = {
   fullName: Scalars["String"];
   givenNames: Scalars["String"];
   surname: Scalars["String"];
+  availabilities: Array<Availability>;
+};
+
+export type MemberAvailabilitiesArgs = {
+  unitCode: Scalars["String"];
+  from: Scalars["DateTime"];
+  to: Scalars["DateTime"];
 };
 
 export type Mutation = {
@@ -35,6 +61,17 @@ export type Query = {
   members: Array<Member>;
   loggedInMember: Member;
 };
+
+export enum RescueAvailable {
+  Immediate = "IMMEDIATE",
+  Support = "SUPPORT",
+  Unavailable = "UNAVAILABLE"
+}
+
+export enum StormAvailable {
+  Available = "AVAILABLE",
+  Unavailable = "UNAVAILABLE"
+}
 
 export type Unit = {
   __typename?: "Unit";
@@ -120,6 +157,15 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars["String"]>;
   Member: ResolverTypeWrapper<MemberDbObject>;
   Int: ResolverTypeWrapper<Scalars["Int"]>;
+  DateTime: ResolverTypeWrapper<Scalars["DateTime"]>;
+  Availability: ResolverTypeWrapper<
+    Omit<Availability, "unit" | "member"> & {
+      unit: ResolversTypes["Unit"];
+      member: ResolversTypes["Member"];
+    }
+  >;
+  StormAvailable: StormAvailable;
+  RescueAvailable: RescueAvailable;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 };
@@ -132,6 +178,13 @@ export type ResolversParentTypes = {
   String: Scalars["String"];
   Member: MemberDbObject;
   Int: Scalars["Int"];
+  DateTime: Scalars["DateTime"];
+  Availability: Omit<Availability, "unit" | "member"> & {
+    unit: ResolversTypes["Unit"];
+    member: ResolversTypes["Member"];
+  };
+  StormAvailable: StormAvailable;
+  RescueAvailable: RescueAvailable;
   Mutation: {};
   Boolean: Scalars["Boolean"];
 };
@@ -143,6 +196,34 @@ export type AuthenticatedDirectiveResolver<
   Args = {}
 > = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
+export type AvailabilityResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes["Availability"]
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  unit?: Resolver<ResolversTypes["Unit"], ParentType, ContextType>;
+  member?: Resolver<ResolversTypes["Member"], ParentType, ContextType>;
+  from?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  to?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  storm?: Resolver<
+    Maybe<ResolversTypes["StormAvailable"]>,
+    ParentType,
+    ContextType
+  >;
+  rescue?: Resolver<
+    Maybe<ResolversTypes["RescueAvailable"]>,
+    ParentType,
+    ContextType
+  >;
+  vehicle?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  note?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+};
+
+export interface DateTimeScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes["DateTime"], any> {
+  name: "DateTime";
+}
+
 export type MemberResolvers<
   ContextType = any,
   ParentType = ResolversParentTypes["Member"]
@@ -152,6 +233,12 @@ export type MemberResolvers<
   fullName?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   givenNames?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   surname?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  availabilities?: Resolver<
+    Array<ResolversTypes["Availability"]>,
+    ParentType,
+    ContextType,
+    MemberAvailabilitiesArgs
+  >;
 };
 
 export type MutationResolvers<
@@ -185,6 +272,8 @@ export type UnitResolvers<
 };
 
 export type Resolvers<ContextType = any> = {
+  Availability?: AvailabilityResolvers<ContextType>;
+  DateTime?: GraphQLScalarType;
   Member?: MemberResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

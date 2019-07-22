@@ -6,11 +6,25 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: Date;
 };
 
 export type AdditionalEntityFields = {
   path?: Maybe<Scalars["String"]>;
   type?: Maybe<Scalars["String"]>;
+};
+
+export type Availability = {
+  __typename?: "Availability";
+  id: Scalars["ID"];
+  unit: Scalars["String"];
+  member: Scalars["Int"];
+  from: Scalars["DateTime"];
+  to: Scalars["DateTime"];
+  storm?: Maybe<StormAvailable>;
+  rescue?: Maybe<RescueAvailable>;
+  vehicle?: Maybe<Scalars["String"]>;
+  note?: Maybe<Scalars["String"]>;
 };
 
 export type Member = {
@@ -21,6 +35,17 @@ export type Member = {
   surname: Scalars["String"];
   password?: Maybe<Scalars["String"]>;
 };
+
+export enum RescueAvailable {
+  Immediate = "IMMEDIATE",
+  Support = "SUPPORT",
+  Unavailable = "UNAVAILABLE"
+}
+
+export enum StormAvailable {
+  Available = "AVAILABLE",
+  Unavailable = "UNAVAILABLE"
+}
 
 export type Unit = {
   __typename?: "Unit";
@@ -41,4 +66,16 @@ export type MemberDbObject = {
   givenNames: string;
   surname: string;
   password?: Maybe<string>;
+};
+
+export type AvailabilityDbObject = {
+  _id: ObjectID;
+  unit: string;
+  member: number;
+  from: Date;
+  to: Date;
+  storm?: Maybe<string>;
+  rescue?: Maybe<string>;
+  vehicle?: Maybe<string>;
+  note?: Maybe<string>;
 };

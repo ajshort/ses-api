@@ -1,3 +1,5 @@
+scalar DateTime
+
 type Unit @entity {
   id: ID! @id
   code: String! @column
@@ -10,4 +12,27 @@ type Member @entity {
   givenNames: String! @column
   surname: String! @column
   password: String @column
+}
+
+enum StormAvailable {
+  AVAILABLE
+  UNAVAILABLE
+}
+
+enum RescueAvailable {
+  IMMEDIATE
+  SUPPORT
+  UNAVAILABLE
+}
+
+type Availability @entity {
+  id: ID! @id
+  unit: String! @column
+  member: Int! @column
+  from: DateTime! @column
+  to: DateTime! @column
+  storm: StormAvailable @column
+  rescue: RescueAvailable @column
+  vehicle: String @column
+  note: String @column
 }
