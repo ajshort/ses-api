@@ -3,16 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "description": "",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
     "watch-ts": "tsc -w",
-    "watch-node": "nodemon ./dist/index.js",
+    "watch-node": "nodemon -e js,gql",
     "start": "concurrently 'npm:watch-ts' 'npm:watch-node'"
   },
   "author": "Andrew Short <andrewjshort@gmail.com>",
   "dependencies": {
+    "apollo-server": "^2.7.0",
+    "graphql": "^14.4.2"
   },
   "devDependencies": {
+    "@types/graphql": "^14.2.2",
     "concurrently": "^4.1.1",
     "nodemon": "^1.19.1",
     "typescript": "^3.5.3"
